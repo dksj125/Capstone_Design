@@ -1,4 +1,5 @@
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import WebDriverException as WDE
 from selenium.webdriver.common.keys import Keys
 import requests
@@ -7,6 +8,16 @@ import time
 import pandas as pd
 from Comment_Crawl import Comment_Crawl
 from download_video import download_video
+from selenium.webdriver.common.by import By
+
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument("--single-process")
+chrome_options.add_argument("--disable-dev-shm-usage")
+driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+
+
 
 url = "https://youtube.com/"
 
@@ -14,17 +25,17 @@ keyword = input("검색: ")
 
 finished_line = 10
 
-path = "./chromedriver.exe"
+path = r"/root/.wdm/drivers/chromedriver/linux64/100.0.4896.60/chromedriver"
 
-browser = webdriver.Chrome(path)
-browser.maximize_window()
+browser = webdriver.Chrome(path, options=chrome_options)
 
 browser.get(url)
 time.sleep(2)
 
 search = browser.find_element_by_name("search_query")
-time.sleep(2)
+time.sleep(1)
 search.send_keys(keyword)
+time.sleep(1)
 search.send_keys(Keys.ENTER)
 
 present_url = browser.current_url
@@ -54,7 +65,7 @@ test = soup.find_all("ytd-video-renderer", attrs={"class":'style-scope ytd-item-
 video_list = []
 
 for i in test:
-    
+
     title = i.find("yt-formatted-string", attrs={"class":'style-scope ytd-video-renderer'}).get_text()
     name = i.find("a", attrs={"class":'yt-simple-endpoint style-scope yt-formatted-string'}).get_text()
     content_url = i.find("a", attrs={"class":'yt-simple-endpoint style-scope ytd-video-renderer'})["href"]
@@ -68,6 +79,7 @@ new = pd.DataFrame(columns=['Channel', 'title' , 'url_link'])
 
 # 자료 집어넣기
 for i in range(len(video_list)):
+    
     new.loc[i] = video_list[i]
 
 # 저장하기
@@ -87,8 +99,8 @@ list_for_download = []
 for i, j in zip(new_title_list, new_url_list):
     list_for_download.append([i,j])
 
-#for i in new_comment_list:
-#    download_video()
-
 for i in list_for_download:
     Comment_Crawl(i[0], i[1])
+
+for i in list_for_download:
+    download_video(i[1])

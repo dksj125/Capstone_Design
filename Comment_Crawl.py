@@ -1,13 +1,24 @@
 import pandas as pd
 import time
 from tqdm.auto import tqdm
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-chrome_driver_path = r'./chromedriver.exe'
+
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument("--single-process")
+chrome_options.add_argument("--disable-dev-shm-usage")
+driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+
+
+chrome_driver_path = r"/root/.wdm/drivers/chromedriver/linux64/100.0.4896.60/chromedriver"
 
 def Comment_Crawl(title, url):
     
@@ -26,7 +37,7 @@ def Comment_Crawl(title, url):
 # 크리에이터 하트 여부
     heart_exist_lst = []
 
-    with Chrome(executable_path = chrome_driver_path) as driver:
+    with Chrome(executable_path = chrome_driver_path, options=chrome_options) as driver:
     # 찾으려는 대상이 불러올 때까지 지정된 시간만큼 대기하도록 설정한다.
     # 인자는 초(second) 단위이며, Default 값은 0초이다. 
         wait = WebDriverWait(driver, 20)

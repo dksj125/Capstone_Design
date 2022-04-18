@@ -2,7 +2,7 @@ from pytube import YouTube
 
 
 def download_video(url):
-    Download_Folder = "./Movie"
+    Download_Folder = "../Movie"
 
     pl = YouTube("https://www.youtube.com/" + url)
 
