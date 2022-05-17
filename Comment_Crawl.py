@@ -18,7 +18,7 @@ chrome_options.add_argument("--disable-dev-shm-usage")
 driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 
 
-chrome_driver_path = r"/root/.wdm/drivers/chromedriver/linux64/100.0.4896.60/chromedriver"
+chrome_driver_path = r"./chromedriver.exe"
 
 def Comment_Crawl(title, url):
     
@@ -101,17 +101,7 @@ def Comment_Crawl(title, url):
         # 좋아요 개수가 없을 경우에
             like_count_lst.append('0')
         
-    # 크리에이터 하트 여부 체크하기
-        for creater_heart in tqdm(wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, '#creator-heart')))):
-        # 크리에이터 하트 html 존재 여부로 체크
-            try:
-                if creater_heart.find_element_by_css_selector('#creator-heart-button'):
-                    heart_exist_lst.append('하트')
-                else:
-                    heart_exist_lst.append('없음')
-            except:
-            # 크롤링 값이 없을 경우에
-                heart_exist_lst.append('없음')           
+
 
 
 # 저장 위치
@@ -119,8 +109,7 @@ def Comment_Crawl(title, url):
     
     data_dict = {'댓글 작성자' : commenter_lst,
                        '댓글' : comment_lst,
-                       '좋아요 개수' : like_count_lst,
-                       '하트 유/무': heart_exist_lst}
+                       '좋아요 개수' : like_count_lst}
 
     df = pd.DataFrame.from_dict(data_dict, orient='index')
     
