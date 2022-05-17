@@ -1,8 +1,8 @@
 from pytube import YouTube
 
 
-def download_video(url):
-    Download_Folder = "../Movie"
+def download_video(url, genre):
+    Download_Folder = "./Movie/" + genre
 
     pl = YouTube("https://www.youtube.com/" + url)
 
